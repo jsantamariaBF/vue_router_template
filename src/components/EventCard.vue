@@ -4,7 +4,7 @@
       <div class="event-card">
         <h1>{{ event.id }}</h1>
         <h1>{{ event.title }}</h1>
-        <h2>{{ event.description }}</h2>
+        <h3>{{ event.description }}</h3>
         <h3>Location: {{ event.location }}</h3>
         <h4>{{ event.date }}</h4>
         <h4>{{ event.time }}</h4>
@@ -30,7 +30,7 @@ export default {
 
 .event-card {
   padding: 1.2rem;
-  width: 70%;
+  width: 80%;
   cursor: pointer;
   border: 1px solid black;
   margin-bottom: 1.1rem;
