@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import EventsList from "@/views/EventsList.vue";
+import EventList from "@/views/EventList.vue";
 import EventLayout from "@/views/event/Layout.vue";
 import EventDetails from "@/views/event/Details.vue";
 import EventRegister from "@/views/event/Register.vue";
@@ -12,7 +12,7 @@ const routes = [
   {
     path: "/",
     name: "EventList",
-    component: EventsList,
+    component: EventList,
     props: (route) => ({ page: parseInt(route.query.page) || 1 }),
   },
   {
@@ -21,7 +21,7 @@ const routes = [
     component: About,
   },
   {
-    path: "/event/:id",
+    path: "/events/:id",
     name: "EventLayout",
     props: true,
     component: EventLayout,
@@ -43,11 +43,33 @@ const routes = [
       },
     ],
   },
+  /* Solution to redirect. The afterEvent will catch the current param 
+    and will add it in return redirect */
+  {
+    path: "/event/:afterEvent(.*)",
+    redirect: (to) => {
+      return { path: "/events/" + to.params.afterEvent };
+    },
+  },
+  /* One solution to redirect */
+  // {
+  //   path: "/event/:id",
+  //   redirect: () => {
+  //     return { name: "EventDetails" };
+  //   },
+  //   children: [
+  //     { path: "register", redirect: () => ({ name: "EventRegister" }) },
+  //     { path: "edit", redirect: () => ({ name: "EventEdit" }) },
+  //   ],
+  // },
   {
     path: "/event/contact",
     name: "Contact",
     props: true,
     component: Contact,
+    children: [
+      { path: "/events/contact", redirect: () => ({ name: "Contact" }) },
+    ],
   },
 ];
 
