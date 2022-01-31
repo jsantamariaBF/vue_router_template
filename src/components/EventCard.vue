@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name: 'EventDetails', params: { id: event.id } }">
+  <router-link :to="{ name: 'EventLayout', params: { id: event.id } }">
     <div class="container">
       <div class="event-card">
         <h1>{{ event.id }}</h1>

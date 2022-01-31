@@ -1,15 +1,19 @@
 <template>
-  <router-link :to="{ name: 'EventDetails', params: { id } }">
-    Details
-  </router-link>
-  <router-link :to="{ name: 'EventRegister', params: { id } }">
-    | Register
-  </router-link>
-  <router-link :to="{ name: 'EventEdit', params: { id } }">
-    | Edit
-  </router-link>
-  <div v-if="event">
-    <router-view :event="event"></router-view>
+  <div id="nav">
+    <router-link :to="{ name: 'EventDetails', params: { id } }">
+      Details
+    </router-link>
+    |
+    <router-link :to="{ name: 'EventRegister', params: { id } }">
+      Register
+    </router-link>
+    |
+    <router-link :to="{ name: 'EventEdit', params: { id } }">
+      Edit
+    </router-link>
+    <div v-if="event">
+      <router-view :event="event"></router-view>
+    </div>
   </div>
 </template>
 
@@ -33,4 +37,17 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="css" scoped>
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
+}
+</style>
