@@ -45,7 +45,6 @@ export default {
       this.event = null;
       EventService.getEvents(2, this.page)
         .then((response) => {
-          console.log(response);
           this.event = response.data;
           this.totalEvents = response.headers["x-total-count"];
         })
@@ -57,8 +56,6 @@ export default {
   computed: {
     hasNextPage() {
       let totalPages = Math.ceil(this.totalEvents / 2);
-      console.log(totalPages);
-
       return this.page < totalPages;
     },
   },
