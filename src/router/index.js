@@ -5,6 +5,8 @@ import EventDetails from "@/views/event/Details.vue";
 import EventRegister from "@/views/event/Register.vue";
 import EventEdit from "@/views/event/Edit.vue";
 import About from "@/views/About.vue";
+import NotFound from "@/views/NotFound.vue";
+import NetworkError from "@/views/NetworkError.vue";
 
 import Contact from "../views/Contact.vue";
 
@@ -70,6 +72,25 @@ const routes = [
     children: [
       { path: "/events/contact", redirect: () => ({ name: "Contact" }) },
     ],
+  },
+  // Create a new route when users navigate to a path that doesn't exist
+  {
+    // The catchAll(.*) will catch the wrong url path an will display NotFound view.
+    path: "/:catchAll(.*)",
+    name: "Not Found",
+    component: NotFound,
+  },
+  {
+    // When the user try to navigate to an Id that doesn't exist
+    path: "/404/:resource",
+    name: "404Resource",
+    component: NotFound,
+    props: true,
+  },
+  {
+    path: "/network-error",
+    name: "NetworkError",
+    component: NetworkError,
   },
 ];
 

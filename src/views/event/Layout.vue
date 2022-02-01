@@ -1,11 +1,11 @@
 <template>
-  <div id="nav">
+  <div v-if="id" id="nav">
     <router-link :to="{ name: 'EventDetails' }"> Details </router-link>
     |
     <router-link :to="{ name: 'EventRegister' }"> Register </router-link>
     |
     <router-link :to="{ name: 'EventEdit' }"> Edit </router-link>
-    <div v-if="event">
+    <div>
       <router-view :event="event"></router-view>
     </div>
   </div>
@@ -26,7 +26,20 @@ export default {
     //fetch API and set response equal to event
     EventService.getEvent(this.id)
       .then((response) => (this.event = response.data))
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        //   redirect the user when route is not found (404)
+        if (error.response && error.response.status === 404) {
+          this.$router.push({
+            name: "404Resource",
+            params: { resource: "event" },
+          });
+        } else {
+          // redirect the user when we assume connectivity fails.
+          this.$router.push({
+            name: "NetworkError",
+          });
+        }
+      });
   },
 };
 </script>
