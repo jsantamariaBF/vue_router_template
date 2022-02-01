@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="event">
     <p>Edit the event here</p>
   </div>
 </template>

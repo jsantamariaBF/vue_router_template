@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>{{ event.title }}</h1>
+  <div v-if="event">
+    <h2>{{ event.title }}</h2>
     <h2>{{ event.category }}</h2>
     <p>Testing routes</p>
   </div>
