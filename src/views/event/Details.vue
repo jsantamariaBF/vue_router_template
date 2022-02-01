@@ -1,7 +1,7 @@
 <template>
-  <div v-if="event">
-    <h2>{{ event.title }}</h2>
-    <h2>{{ event.category }}</h2>
+  <div v-if="GStore">
+    <h2>{{ GStore.title }}</h2>
+    <h2>{{ GStore.category }}</h2>
     <p>Testing routes</p>
   </div>
 </template>
@@ -9,7 +9,8 @@
 <script>
 export default {
   props: ["event"],
+  inject: ["GStore"],
 };
 </script>
 
-<style></style>
+<style lang="css" scoped></style>

@@ -9,6 +9,9 @@ import NotFound from "@/views/NotFound.vue";
 import NetworkError from "@/views/NetworkError.vue";
 
 import Contact from "../views/Contact.vue";
+import NProgress from "nprogress";
+import EventService from "@/services/EventService.js";
+import GStore from "@/store";
 
 const routes = [
   {
@@ -27,6 +30,26 @@ const routes = [
     name: "EventLayout",
     props: true,
     component: EventLayout,
+    beforeEnter: (to) => {
+      return EventService.getEvent(to.params.id)
+        .then((response) => {
+          GStore.event = response.data;
+        })
+        .catch((error) => {
+          //   redirect the user when route is not found (404)
+          if (error.response && error.response.status === 404) {
+            return {
+              name: "404Resource",
+              params: { resource: "event" },
+            };
+          } else {
+            // redirect the user when we assume connectivity fails.
+            return {
+              name: "NetworkError",
+            };
+          }
+        });
+    },
     children: [
       {
         path: "",
@@ -42,6 +65,7 @@ const routes = [
         path: "edit",
         name: "EventEdit",
         component: EventEdit,
+        meta: { requireAuth: true },
       },
     ],
   },
@@ -97,6 +121,37 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  scrollBehavior(savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { top: 0 };
+    }
+  },
+});
+
+router.beforeEach((to, from) => {
+  NProgress.start();
+
+  const notAuthorized = true;
+  if (to.meta.requireAuth && notAuthorized) {
+    GStore.flashMessage =
+      "Sorry, you are not authorized to visit this page. Please, log in";
+
+    setTimeout(() => {
+      GStore.flashMessage = "";
+    }, 3000);
+
+    if (from.href) {
+      return false;
+    } else {
+      return { path: "/" };
+    }
+  }
+});
+
+router.afterEach(() => {
+  NProgress.done();
 });
 
 export default router;

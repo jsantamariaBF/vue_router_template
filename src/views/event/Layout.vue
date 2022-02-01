@@ -1,5 +1,6 @@
 <template>
-  <div v-if="id" id="nav">
+  <div v-if="GStore.event" id="nav">
+    <h1>{{ GStore.title }}</h1>
     <router-link :to="{ name: 'EventDetails' }"> Details </router-link>
     |
     <router-link :to="{ name: 'EventRegister' }"> Register </router-link>
@@ -12,35 +13,19 @@
 </template>
 
 <script>
-import EventService from "@/services/EventService.js";
-
 export default {
   name: "EventLayout",
   props: ["id"],
+  inject: ["GStore"],
   data() {
     return {
       event: null,
     };
   },
-  created() {
-    //fetch API and set response equal to event
-    EventService.getEvent(this.id)
-      .then((response) => (this.event = response.data))
-      .catch((error) => {
-        //   redirect the user when route is not found (404)
-        if (error.response && error.response.status === 404) {
-          this.$router.push({
-            name: "404Resource",
-            params: { resource: "event" },
-          });
-        } else {
-          // redirect the user when we assume connectivity fails.
-          this.$router.push({
-            name: "NetworkError",
-          });
-        }
-      });
-  },
+  //   created() {
+  //     //fetch API and set response equal to event
+
+  //   },
 };
 </script>
 

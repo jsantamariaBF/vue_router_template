@@ -1,5 +1,5 @@
 <template>
-  <div v-if="event">
+  <div v-if="GStore">
     <p>Edit the event here</p>
   </div>
 </template>
@@ -7,6 +7,7 @@
 <script>
 export default {
   props: ["event"],
+  inject: ["GStore"],
 };
 </script>
 
