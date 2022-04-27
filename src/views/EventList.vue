@@ -24,42 +24,62 @@
 </template>
 
 <script>
+import { computed, ref } from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
+
 import EventCard from "@/components/EventCard.vue";
 import EventService from "@/services/EventService.js";
-import { watchEffect } from "vue";
+import NProgress from "nprogress";
 
 export default {
   name: "EventList",
-  props: ["page"],
+  props: {
+    page: Number,
+  },
+  inject: ["GStore"],
   components: {
     EventCard,
   },
-  data() {
-    return {
-      event: null,
-      totalEvents: 0,
-    };
-  },
-  created() {
-    watchEffect(() => {
-      this.event = null;
-      EventService.getEvents(2, this.page)
+  setup(props) {
+    const event = ref(null);
+    const totalEvents = ref(0);
+    const hasNextPage = computed(() => {
+      let totalPages = Math.ceil(totalEvents.value / 2);
+      return props.page < totalPages;
+    });
+
+    onBeforeRouteUpdate((to) => {
+      NProgress.start();
+      return EventService.getEvents(2, parseInt(to.query.page) || 1)
         .then((response) => {
-          this.event = response.data;
-          this.totalEvents = response.headers["x-total-count"];
+          event.value = response.data;
+          totalEvents.value = response.headers["x-total-count"];
         })
         .catch(() => {
-          this.$router.push({
-            name: "NetworkError",
-          });
-        });
+          return { name: "NetworkError" };
+        })
+        .finally(() => NProgress.done());
     });
+
+    return {
+      event,
+      totalEvents,
+      hasNextPage,
+    };
   },
-  computed: {
-    hasNextPage() {
-      let totalPages = Math.ceil(this.totalEvents / 2);
-      return this.page < totalPages;
-    },
+  beforeRouteEnter(to, from, next) {
+    NProgress.start();
+    EventService.getEvents(2, parseInt(to.query.page) || 1)
+      .then((response) => {
+        next((comp) => {
+          comp.event = response.data;
+          comp.totalEvents = response.headers["x-total-count"];
+        });
+      })
+      .catch(() => {
+        next({ name: "NetworkError" });
+      })
+      .finally(() => NProgress.done());
   },
 };
 </script>

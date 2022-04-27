@@ -17,7 +17,9 @@
 <script>
 export default {
   name: "EventCard",
-  props: ["event"],
+  props: {
+    event: Object,
+  },
 };
 </script>
 

@@ -1,15 +1,23 @@
 <template>
-  <div v-if="event">
-    <h2>{{ event.title }}</h2>
-    <h2>{{ event.category }}</h2>
+  <div v-if="gstore">
+    <h2>{{ gstore.event.title }}</h2>
+    <h2>{{ gstore.event.category }}</h2>
     <p>Testing routes</p>
   </div>
 </template>
 
 <script>
+import { inject } from "vue";
 export default {
-  props: ["event"],
+  props: {
+    event: Object,
+  },
+  setup() {
+    const gstore = inject("GStore");
+
+    return { gstore };
+  },
 };
 </script>
 
-<style></style>
+<style lang="css" scoped></style>
