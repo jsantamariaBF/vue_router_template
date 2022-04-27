@@ -1,13 +1,17 @@
 <template>
-  <div v-if="GStore">
+  <div v-if="gstore">
     <p>Edit the event here</p>
   </div>
 </template>
 
 <script>
+import { inject } from "vue";
 export default {
-  props: ["event"],
-  inject: ["GStore"],
+  setup() {
+    const gstore = inject("GStore");
+
+    return { gstore };
+  },
 };
 </script>
 

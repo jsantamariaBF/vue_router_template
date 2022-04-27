@@ -24,26 +24,51 @@
 </template>
 
 <script>
+import { computed, ref } from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
+
 import EventCard from "@/components/EventCard.vue";
 import EventService from "@/services/EventService.js";
-// import { watchEffect } from "vue";
-// import NProgress from "nprogress";
+import NProgress from "nprogress";
 
 export default {
   name: "EventList",
-  props: ["page"],
+  props: {
+    page: Number,
+  },
   inject: ["GStore"],
   components: {
     EventCard,
   },
-  data() {
+  setup(props) {
+    const event = ref(null);
+    const totalEvents = ref(0);
+    const hasNextPage = computed(() => {
+      let totalPages = Math.ceil(totalEvents.value / 2);
+      return props.page < totalPages;
+    });
+
+    onBeforeRouteUpdate((to) => {
+      NProgress.start();
+      return EventService.getEvents(2, parseInt(to.query.page) || 1)
+        .then((response) => {
+          event.value = response.data;
+          totalEvents.value = response.headers["x-total-count"];
+        })
+        .catch(() => {
+          return { name: "NetworkError" };
+        })
+        .finally(() => NProgress.done());
+    });
+
     return {
-      event: null,
-      totalEvents: 0,
+      event,
+      totalEvents,
+      hasNextPage,
     };
   },
   beforeRouteEnter(to, from, next) {
-    // NProgress.start();
+    NProgress.start();
     EventService.getEvents(2, parseInt(to.query.page) || 1)
       .then((response) => {
         next((comp) => {
@@ -53,26 +78,8 @@ export default {
       })
       .catch(() => {
         next({ name: "NetworkError" });
-      });
-    // .finally(() => NProgress.done());
-  },
-  beforeRouteUpdate(to) {
-    // NProgress.start();
-    return EventService.getEvents(2, parseInt(to.query.page) || 1)
-      .then((response) => {
-        this.event = response.data;
-        this.totalEvents = response.headers["x-total-count"];
       })
-      .catch(() => {
-        return { name: "NetworkError" };
-      });
-    // .finally(() => NProgress.done());
-  },
-  computed: {
-    hasNextPage() {
-      let totalPages = Math.ceil(this.totalEvents / 2);
-      return this.page < totalPages;
-    },
+      .finally(() => NProgress.done());
   },
 };
 </script>

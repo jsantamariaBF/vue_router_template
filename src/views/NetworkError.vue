@@ -4,7 +4,7 @@
     <h2>Please, take a break and try again later</h2>
     <h4>
       It looks like you are experiencing some network issues. Please
-      <a @click="this.$router.go(-1)"> click here </a>
+      <a @click="$router.go(-1)"> click here </a>
       and try again.
     </h4>
   </div>

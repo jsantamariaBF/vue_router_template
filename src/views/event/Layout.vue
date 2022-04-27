@@ -1,6 +1,6 @@
 <template>
-  <div v-if="GStore.event" id="nav">
-    <h1>{{ GStore.title }}</h1>
+  <div v-if="gstore.event" id="nav">
+    <h1>{{ gstore.title }}</h1>
     <router-link :to="{ name: 'EventDetails' }"> Details </router-link>
     |
     <router-link :to="{ name: 'EventRegister' }"> Register </router-link>
@@ -13,13 +13,18 @@
 </template>
 
 <script>
+import { ref, inject } from "vue";
 export default {
   name: "EventLayout",
-  props: ["id"],
-  inject: ["GStore"],
-  data() {
+  props: {
+    id: String,
+  },
+  setup() {
+    const event = ref(null);
+    const gstore = inject("GStore");
     return {
-      event: null,
+      event,
+      gstore,
     };
   },
   //   created() {
